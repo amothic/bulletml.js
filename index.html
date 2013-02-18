@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Bulletml.js by daishihmr</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Bulletml.js</h1>
+        <h2>弾幕記述言語BulletMLをJavaScriptで利用するためのユーティリティ集。enchant.js用プラグイン、tmlib.js用プラグインもあるよ。</h2>
+        <a href="https://github.com/daishihmr/bulletml.js" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>bulletml.js</h1>
+
+<p>BulletMLをJavaScriptで読み込んでいろいろやるためのパーサー。</p>
+
+<h1>bulletml.enchant.js</h1>
+
+<p>enchant.jsでBulletMLを利用するためのプラグイン。</p>
+
+<p>使い方は<a href="https://github.com/daishihmr/bulletml.js/wiki">wiki</a>を参照。</p>
+
+<h1>bulletml.tmlib.js</h1>
+
+<p>tmlib.jsでBulletMLを利用するためのプラグイン。</p>
+
+<h1>DEMO</h1>
+
+<p><a href="http://9leap.net/games/2877/"><img src="http://9leap.net/screenshots//140x140/2877_140"></a>
+<a href="http://9leap.net/games/2364/"><img src="http://9leap.net/screenshots//140x140/2364_140"></a></p>
+
+<h1>FEATURES</h1>
+
+<h2>Parser</h2>
+
+<p>従来型の、XMLで記述されたBulletMLをロードして実行することができます</p>
+
+<div class="highlight"><pre><span class="c1">// enchant.js</span>
+<span class="kd">var</span> <span class="nx">game</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Game</span><span class="p">();</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">preload</span><span class="p">(</span><span class="s2">"bulletml.xml"</span><span class="p">);</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">attackPattern</span> <span class="o">=</span> <span class="nx">game</span><span class="p">.</span><span class="nx">assets</span><span class="p">[</span><span class="s2">"bulletml.xml"</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">game</span><span class="p">.</span><span class="nx">start</span><span class="p">();</span>
+</pre></div>
+
+<h2>DSL</h2>
+
+<p>JavaScriptによるDSLで弾幕定義を記述することができます</p>
+
+<p>XMLで書くとこんな弾幕も…</p>
+
+<div class="highlight"><pre><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE bulletml SYSTEM "http://www.asahi-net.or.jp/~cs8k-cyu/bulletml/bulletml.dtd"&gt;</span>
+<span class="nt">&lt;bulletml</span> <span class="na">xmlns=</span><span class="s">"http://www.asahi-net.or.jp/~cs8k-cyu/bulletml"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;action</span> <span class="na">label=</span><span class="s">"top"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;repeat&gt;</span>
+            <span class="nt">&lt;times&gt;</span>10<span class="nt">&lt;/times&gt;</span>
+            <span class="nt">&lt;action&gt;</span>
+                <span class="nt">&lt;fire&gt;</span>
+                    <span class="nt">&lt;direction</span> <span class="na">type=</span><span class="s">"absolute"</span><span class="nt">&gt;</span>60<span class="nt">&lt;/direction&gt;</span>
+                    <span class="nt">&lt;bullet</span> <span class="nt">/&gt;</span>
+                <span class="nt">&lt;/fire&gt;</span>
+                <span class="nt">&lt;wait&gt;</span>5<span class="nt">&lt;/wait&gt;</span>
+            <span class="nt">&lt;/action&gt;</span>
+        <span class="nt">&lt;/repeat&gt;</span>
+    <span class="nt">&lt;/action&gt;</span>
+<span class="nt">&lt;/bulletml&gt;</span>
+</pre></div>
+
+<p>DSLで書くとこんなにスッキリ！</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">spec</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">bulletml</span><span class="p">.</span><span class="nx">Root</span><span class="p">({</span>
+    <span class="nx">top</span><span class="o">:</span> <span class="nx">action</span><span class="p">([</span>
+        <span class="nx">repeat</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="p">[</span>
+            <span class="nx">fire</span><span class="p">(</span><span class="nx">direction</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="s2">"absolute"</span><span class="p">),</span> <span class="nx">bullet</span><span class="p">),</span>
+            <span class="nx">wait</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+        <span class="p">]),</span>
+    <span class="p">]),</span>
+<span class="p">});</span>
+</pre></div>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/daishihmr/bulletml.js/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/daishihmr/bulletml.js/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/daishihmr/bulletml.js"></a> is maintained by <a href="https://github.com/daishihmr">daishihmr</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
